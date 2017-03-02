@@ -14,6 +14,7 @@ namespace BottomBarXFExample
 
 			BottomBarPage bottomBarPage = new BottomBarPage ();
 			bottomBarPage.BarBackgroundColor = Color.Pink;
+            bottomBarPage.FixedMode = true;
 
 
 			// You can only define the color for the active icon if you set the Bottombar to fixed mode
@@ -38,10 +39,16 @@ namespace BottomBarXFExample
 
 			string[] tabTitles = { "Favorites", "Friends", "Nearby", "Recents", "Restaurants" };
 			string [] tabColors = { null, "#5D4037", "#7B1FA2", "#FF5252", "#FF9800" };
+            bool[] tabVisibilities = { true, true, true, true, false };
+            var navigateCommand = new Command(() =>
+            {
+                bottomBarPage.CurrentPage = bottomBarPage.Children.Last();
+            });
 
 			for (int i = 0; i < tabTitles.Length; ++i) {
 				string title = tabTitles [i];
 				string tabColor = tabColors [i];
+                bool tabVisibility = tabVisibilities[i];
 
 				FileImageSource icon = (FileImageSource) FileImageSource.FromFile (string.Format ("ic_{0}.png", title.ToLowerInvariant ()));
 
@@ -58,6 +65,9 @@ namespace BottomBarXFExample
 
 				// set label based on title
 				tabPage.UpdateLabel ();
+
+                tabPage.SetIsTabVisible(tabVisibility);
+                tabPage.ButtonCommand = navigateCommand;
 
 				// add tab pag to tab control
 				bottomBarPage.Children.Add (tabPage);

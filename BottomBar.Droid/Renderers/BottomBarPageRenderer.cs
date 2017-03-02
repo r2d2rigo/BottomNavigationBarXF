@@ -55,11 +55,18 @@ namespace BottomBar.Droid.Renderers
 		#region IOnTabClickListener
 		public void OnTabSelected (int position)
 		{
-			//Do we need this call? It's also done in OnElementPropertyChanged
-			SwitchContent(Element.Children [position]);
+            //Do we need this call? It's also done in OnElementPropertyChanged
+            Page selectedPage = null;
+
+            if (position >= 0 && position <= Element.Children.Count)
+            {
+                selectedPage = Element.Children[position];
+            }
+
+			SwitchContent(selectedPage);
 			var bottomBarPage = Element as BottomBarPage;
-			bottomBarPage.CurrentPage = Element.Children[position];
-			//bottomBarPage.RaiseCurrentPageChanged();
+			bottomBarPage.CurrentPage = selectedPage;
+            //bottomBarPage.RaiseCurrentPageChanged();
 		}
 
 		public void OnTabReSelected (int position)
@@ -69,8 +76,9 @@ namespace BottomBar.Droid.Renderers
 
         public void RefreshTabIcons()
         {
-            for (int i = 0; i < Element.Children.Count; ++i) {
-                Page page = Element.Children[i];
+            var tabVisibleChildren = GetTabVisibleChildren();
+            for (int i = 0; i < tabVisibleChildren.Count; ++i) {
+                Page page = tabVisibleChildren[i];
 
                 var pageTab = _currentTabs?.FirstOrDefault(t => t.PageId == page.Id);
 
@@ -203,7 +211,15 @@ namespace BottomBar.Droid.Renderers
 			base.OnElementPropertyChanged (sender, e);
 
 			if (e.PropertyName == nameof (TabbedPage.CurrentPage)) {
-				SwitchContent (Element.CurrentPage);
+                var tabIndex = -1;
+
+                if (Element.CurrentPage != null)
+                {
+                    tabIndex = Element.Children.IndexOf(Element.CurrentPage);
+                }
+
+                _bottomBar.SelectTabAtPosition(tabIndex, false);
+                SwitchContent(Element.CurrentPage);
                 RefreshTabIcons();
             } else if (e.PropertyName == NavigationPage.BarBackgroundColorProperty.PropertyName) {
 				UpdateBarBackgroundColor ();
@@ -294,9 +310,10 @@ namespace BottomBar.Droid.Renderers
 
 		void SetTabItems ()
 		{
-            UpdatableBottomBarTab[] tabs = Element.Children.Select(page => {
-                var tabIconId = ResourceManagerEx.IdFromTitle(page.Icon, ResourceManager.DrawableClass);
-                return new UpdatableBottomBarTab(tabIconId, page.Title, page.Id);
+            UpdatableBottomBarTab[] tabs = GetTabVisibleChildren()
+                .Select(page => {
+                    var tabIconId = ResourceManagerEx.IdFromTitle(page.Icon, ResourceManager.DrawableClass);
+                    return new UpdatableBottomBarTab(tabIconId, page.Title, page.Id);
             }).ToArray();
 
             if (tabs.Length > 0) {
@@ -308,8 +325,9 @@ namespace BottomBar.Droid.Renderers
 
         void SetTabColors ()
 		{
-			for (int i = 0; i < Element.Children.Count; ++i) {
-				Page page = Element.Children [i];
+            var tabVisibleChildren = GetTabVisibleChildren();
+			for (int i = 0; i < tabVisibleChildren.Count; ++i) {
+				Page page = tabVisibleChildren [i];
 
 				Color? tabColor = page.GetTabColor ();
 
@@ -341,6 +359,14 @@ namespace BottomBar.Droid.Renderers
         void BottomBarPage_ChildRemoved(object sender, ElementEventArgs e)
         {
             UpdateTabs();
+        }
+
+        private IList<Page> GetTabVisibleChildren()
+        {
+            return Element
+                .Children
+                .Where(page => page.GetIsTabVisible())
+                .ToList();
         }
 
         private class UpdatableBottomBarTab : BottomBarTab

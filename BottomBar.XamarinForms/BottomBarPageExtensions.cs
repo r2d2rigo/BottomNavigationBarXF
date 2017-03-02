@@ -42,7 +42,23 @@ namespace BottomBar.XamarinForms
 			return (Color?)page.GetValue (TabColorProperty);
 		}
 
-		#endregion
+        #endregion
+
+        public static readonly BindableProperty IsTabVisibleProperty = BindableProperty.CreateAttached(
+            "IsTabVisible",
+            typeof(bool),
+            typeof(Page),
+            true);
+
+        public static void SetIsTabVisible(this Page page, bool tabVisible)
+        {
+            page.SetValue(IsTabVisibleProperty, tabVisible);
+        }
+
+        public static bool GetIsTabVisible(this Page page)
+        {
+            return (bool)page.GetValue(IsTabVisibleProperty);
+        }
 	}
 }
 

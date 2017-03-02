@@ -40,6 +40,10 @@
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BottomNavigationBar, Version=1.4.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BottomNavigationBar.1.4.0.4\lib\MonoAndroid403\BottomNavigationBar.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="FormsViewGroup, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xamarin.Forms.2.3.3.180\lib\MonoAndroid10\FormsViewGroup.dll</HintPath>
       <Private>True</Private>
@@ -74,9 +78,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="BottomNavigationBar">
-      <HintPath>..\packages\BottomNavigationBar.1.4.0.2\lib\MonoAndroid403\BottomNavigationBar.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xamarin.Forms.2.3.3.180\lib\MonoAndroid10\Xamarin.Forms.Core.dll</HintPath>
